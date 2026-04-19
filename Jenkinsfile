@@ -26,6 +26,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'docker_pswd', usernameVariable: 'docker_user')]) {
                     sh 'echo ${docker_pswd} | docker login -u ${docker_user} --password-stdin'
                     sh 'docker tag my-nodejs-app:${BUILD_NUMBER} debnildocker/my-nodejs-app:${BUILD_NUMBER}'
+                    sh 'docker tag my-nodejs-app:latest debnildocker/my-nodejs-app:latest'
                     sh 'docker push debnildocker/my-nodejs-app:${BUILD_NUMBER}'
                     sh 'docker push debnildocker/my-nodejs-app:latest'
                 }
