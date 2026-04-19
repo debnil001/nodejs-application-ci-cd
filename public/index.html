@@ -1,9 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Node Service</title>
+  <title>User App</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 40px;
+      background: #f4f4f4;
+    }
+    h1 {
+      color: #333;
+    }
+    input {
+      padding: 8px;
+      width: 200px;
+    }
+    button {
+      padding: 8px 12px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    ul {
+      margin-top: 20px;
+    }
+    li {
+      background: white;
+      margin: 5px 0;
+      padding: 10px;
+      list-style: none;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Node User Service Running 🚀</h1>
+
+<h1>🚀 User Management App</h1>
+
+<input type="text" id="username" placeholder="Enter name" />
+<button onclick="addUser()">Add User</button>
+
+<ul id="userList"></ul>
+
+<script>
+async function fetchUsers() {
+  const res = await fetch("/api/users");
+  const users = await res.json();
+
+  const list = document.getElementById("userList");
+  list.innerHTML = "";
+
+  users.forEach(user => {
+    const li = document.createElement("li");
+    li.innerText = user.name + " (ID: " + user.id + ")";
+    list.appendChild(li);
+  });
+}
+
+async function addUser() {
+  const name = document.getElementById("username").value;
+
+  if (!name) return alert("Enter name");
+
+  await fetch("/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name })
+  });
+
+  document.getElementById("username").value = "";
+  fetchUsers();
+}
+
+// Load users on page load
+fetchUsers();
+</script>
+
 </body>
 </html>
