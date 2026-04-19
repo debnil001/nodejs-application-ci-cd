@@ -37,7 +37,7 @@ pipeline {
             steps{
                 echo 'Updating image in K8s deployment'
 
-                sh 'awk -v build_number=${BUILD_NUMBER} \'/image:/ {gsub(/:.*$/, ":debnildocker\\/my-nodejs-app:" build_number)}1\' deployment.yaml > updated-deployment.yaml'
+                sh 'sed -i "s|image: my-nodejs-app:.*|image: debnildocker/my-nodejs-app:${BUILD_NUMBER}|g" deployment.yaml > updated-deployment.yaml'
                 sh 'mv updated-deployment.yaml deployment.yaml'
                 sh 'rm -f updated-deployment.yaml'
             }
