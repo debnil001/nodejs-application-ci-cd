@@ -39,16 +39,19 @@ pipeline {
 
                 sh """
                 sed -i 's|image: .*my-nodejs-app.*|image: debnildocker/my-nodejs-app:${BUILD_NUMBER}|g' deployment.yaml
-                kubectl apply -f deployment.yaml
                 """
             }
         }
 
-        stage('Deploy to Local K8s Cluster'){
-            steps{
-                echo 'Deploying to local K8s cluster'
-
-                sh 'kubectl apply -f deployment.yaml'
+        stage('Deploy to K8s') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh '''
+                    export KUBECONFIG=$KUBECONFIG
+                    kubectl get nodes
+                    kubectl apply -f deployment.yaml
+                    '''
+                }
             }
         }
     }
