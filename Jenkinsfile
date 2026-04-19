@@ -33,12 +33,14 @@ pipeline {
             }
         }
 
-        stage('Update image in K8s Deployment'){
-            steps{
+        stage('Update image in K8s Deployment') {
+            steps {
                 echo 'Updating image in K8s deployment'
 
-                sh 'sed -i "s|image: my-nodejs-app:.*|image: debnildocker/my-nodejs-app:'"${BUILD_NUMBER}"'|g" deployment.yaml'
-                sh 'kubectl apply -f deployment.yaml'
+                sh """
+                sed -i 's|image: .*my-nodejs-app.*|image: debnildocker/my-nodejs-app:${BUILD_NUMBER}|g' deployment.yaml
+                kubectl apply -f deployment.yaml
+                """
             }
         }
 
