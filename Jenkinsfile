@@ -32,6 +32,22 @@ pipeline {
                 }
             }
         }
+
+        stage('Update image in K8s Deployment'){
+            steps{
+                echo 'Updating image in K8s deployment'
+
+                sh 'awk -v build_number=${BUILD_NUMBER} \'/image:/ {gsub(/:.*$/, ":debnildocker\\/my-nodejs-app:" build_number)}1\' deployment.yaml > deployment.yaml'
+            }
+        }
+
+        stage('Deploy to Local K8s Cluster'){
+            steps{
+                echo 'Deploying to local K8s cluster'
+
+                sh 'kubectl apply -f deployment.yaml'
+            }
+        }
     }
 
 }
